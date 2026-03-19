@@ -5,12 +5,12 @@ prompts:
   - '{{prompt}}'
 
 providers:
-  - id: 'file:///content/getting-started/gptReplay.js'
+  - id: 'file:///content/getting-started/PromptEvaluator/gptReplay.js'
     label: 'GPT'
-  - id: 'file:///content/getting-started/geminiReplay.js'
+  - id: 'file:///content/getting-started/PromptEvaluator/geminiReplay.js'
     label: 'Gemini'
 
-tests: 'file:///content/getting-started/testcases.csv'
+tests: 'file:///content/getting-started/PromptEvaluator/testcases.csv'
 
 defaultTest:
   assert:
