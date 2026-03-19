@@ -1,0 +1,6 @@
+prompt,gpt_output,gemini_output
+"What is prompt engineering?","Prompt engineering is the process of designing inputs for AI models...","Prompt engineering means crafting prompts to guide model responses..."
+"Explain RAG simply","RAG is a method that retrieves external information before generating an answer...","RAG combines retrieval with generation so the model can answer using outside knowledge..."
+"Hello, how are you?","مرحبًا، كيف حالك؟","أهلًا، كيف حالك؟"
+"Where is the library?","أين المكتبة؟","أين توجد المكتبة؟"
+"Where is the library?","أنا أذهب إلى المدرسة كل يوم","الطقس جميل اليوم"

@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+description: 'Evaluate saved GPT and Gemini translations using Ollama judge'
+
+prompts:
+  - '{{prompt}}'
+
+providers:
+  - id: 'file:///content/getting-started/gptReplay.js'
+    label: 'GPT'
+  - id: 'file:///content/getting-started/geminiReplay.js'
+    label: 'Gemini'
+
+tests: 'file:///content/getting-started/testcases.csv'
+
+defaultTest:
+  assert:
+    - type: regex
+      value: '[\u0600-\u06FF]'
+    - type: llm-rubric
+      provider: 'ollama:translategemma:12b'
+      value: |
+        The task is to translate the English source text into Arabic.
+
+        Source text:
+        {{prompt}}
+
+        Candidate translation:
+        {{output}}
+
+        First check whether the candidate output is actually Arabic.
+        If the output is not in Arabic, it must fail.
+
+        Then score from 0.0 to 1.0 based on:
+        - semantic accuracy
+        - completeness
+        - fluency in Arabic
+        - grammar and wording
+        - preservation of tone and meaning
+
+        Penalize:
+        - English output instead of Arabic
+        - omissions
+        - mistranslations
+        - unnatural Arabic
+        - added content not present in the source
+
+        Pass only if:
+        - the output is in Arabic
+        - the meaning is accurate
+        - the translation is natural and complete
