@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
-description: 'Evaluate saved GPT and Gemini translations using Ollama judge'
+description: 'Evaluate Trauma-Informed Literary Translations (Flexible Hybrid Analysis)'
 
 prompts:
   - '{{prompt}}'
@@ -10,41 +10,42 @@ providers:
   - id: 'file:///content/getting-started/PromptEvaluator/geminiReplay.js'
     label: 'Gemini'
 
-tests: 'file:///content/getting-started/PromptEvaluator/testcases.csv'
+tests: 'file:///content/getting-started/PromptEvaluator/Dataset.csv'
 
 defaultTest:
   assert:
-    - type: regex
-      value: '[\u0600-\u06FF]'
+    - type: javascript
+      # Ensures at least one Arabic character exists (the translation portion)
+      value: /[\u0600-\u06FF]/.test(output)
     - type: llm-rubric
       provider: 'ollama:translategemma:12b'
       value: |
-        The task is to translate the English source text into Arabic.
-
-        Source text:
+        Act as an expert in Trauma Translation Ethics. You are evaluating a response containing a Translation (Arabic) and an Analysis (Arabic, English, or Mixed).
+        
+        Source English text:
         {{prompt}}
 
-        Candidate translation:
+        Candidate response:
         {{output}}
 
-        First check whether the candidate output is actually Arabic.
-        If the output is not in Arabic, it must fail.
+        ### 1. LANGUAGE & STRUCTURE CHECK
+        - The TRANSLATION MUST be in Arabic. 
+        - The ANALYSIS/NOTE can be in Arabic, English, or a mix. Do not penalize the language choice of the analysis.
+        - FAIL (0.0) if the actual translation of the source text is missing or remains in English.
 
-        Then score from 0.0 to 1.0 based on:
-        - semantic accuracy
-        - completeness
-        - fluency in Arabic
-        - grammar and wording
-        - preservation of tone and meaning
+        ### 2. SCORING CRITERIA (0.0 - 1.0)
+        1. **Witness-Bearing Fidelity (40%):** Does the Arabic translation preserve the "coldness" or "brokenness" of the source? If the English is fragmented or stutters, the Arabic MUST mirror that exact psychological state.
+        2. **Anti-Beautification & Lexical Harshness (30%):** Penalize "flowery" or "poetic" Arabic. Look for "jagged" words (e.g., using "عاجز" instead of "ضعيف"). It should feel gritty and raw.
+        3. **Syntactic & Orthographic Mirroring (20%):** - Dialogue: « » (guillemets).
+           - Internal Monologue: — (em dash).
+           - Retain all ellipses (...) and short, punchy sentence structures.
+        4. **Analytical Insight (10%):** Regardless of the language used (Arabic or English), does the note correctly identify trauma markers (silence, fragmentation, hesitation) in the source?
 
-        Penalize:
-        - English output instead of Arabic
-        - omissions
-        - mistranslations
-        - unnatural Arabic
-        - added content not present in the source
+        ### 3. PENALTIES (Deduct from final score)
+        - (-0.5) **Smoothness Penalty:** If the AI "fixed" a broken thought or stutter into a fluent, "natural" Arabic sentence.
+        - (-0.5) **Politeness Bias:** If the AI added softening adjectives or explanatory phrases (e.g., "شعرت بـ", "للأسف") not in the source.
+        - (-0.3) **Formatting Failure:** If the AI used standard quotes " " or ignored the em dash —.
+        - (-1.0) **Translation Language Failure:** If the primary translation block is not in Arabic.
 
-        Pass only if:
-        - the output is in Arabic
-        - the meaning is accurate
-        - the translation is natural and complete
+        ### FINAL VERDICT:
+        Pass only if the Arabic translation is somber and fragmented (matching the source) and the analysis demonstrates a clear understanding of "Witness-Bearing" ethics.
